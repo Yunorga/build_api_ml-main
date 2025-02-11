@@ -20,7 +20,7 @@ jobs:
 
       - name: Construction de l'image Docker via docker-compose
         working-directory: hands_on_microservices
-        run: docker-compose build
+        run: docker compose build
 
       # - name: Sauvegarder l'image Docker en fichier tar
       #   working-directory: ../../hands_on_microservices
