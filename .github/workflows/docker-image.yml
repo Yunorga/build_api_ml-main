@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build et sauvegarde de l'image Docker
 
 on:
   push:
@@ -7,30 +7,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     permissions:
-        contents: read
-        packages: write # Only needed if pushing to GitHub Packages
+      contents: read
+      packages: write # Only needed if pushing to GitHub Packages
 
     steps:
-    - name: Login to GitHub Packages (or Docker Hub)
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io # Or docker.io for Docker Hub
-          username: ${{ github.repository_owner }} # Or your Docker Hub username
-          password: ${{ secrets.GITHUB_TOKEN }} # Or your Docker Hub password
+      - name: Récupération du code source
+        uses: actions/checkout@v3
 
-    - name: Build the Docker image
-      uses: actions/checkout@v4
-      # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-      with:
-        context: ..\..\hands_on_microservices # The directory containing your docker-compose.yml file
-        file: docker-compose.yml # If your docker-compose file has a different name, specify it here
-        push: true # Push the images to the registry
-        tags: ghcr.io/${{ github.repository }}/your-image-name:latest # Replace with your image name and tag
-        # tags: ghcr.io/${{ github.repository }}/your-image-name:latest # Or your Docker Hub repo and tag
-        
+      - name: Construction de l'image Docker via docker-compose
+        context: ..\..\hands_on_microservices
+        run: docker-compose build
+
+      - name: Sauvegarder l'image Docker en fichier tar
+        # Remplacez "mon_image:latest" par le nom et le tag de votre image tel que défini dans votre docker-compose.yml
+        run: docker save -o mon_image.tar mon_image:latest
+
+      - name: Upload de l'artefact (l'image Docker sauvegardée)
+        uses: actions/upload-artifact@v3
+        with:
+          name: mon_image
+          path: mon_image.tar
