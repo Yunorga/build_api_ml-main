@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+
+  serveur:
+    build:
+      context: ./serveur
+    volumes:
+      - /tmp:/tmp  # Share /tmp for the Unix Domain Socket
+    restart: always
+    environment:
+      - DB_HOST=postgres  # Point to the PostgreSQL service
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=12345678
+      - DB_NAME=my_database  # Name of the PostgreSQL database
+
+  client:
+    build:
+      context: ./client
+    volumes:
+      - /tmp:/tmp  # Share /tmp for the Unix Domain Socket
+    ports:
+      - "8000:8000"  # Expose service_a's port to access it from outside
+    depends_on:
+      - serveur #
+      - postgres  # Make sure service_a also waits for PostgreSQL
+    restart: always
+
+  postgres:
+    image: postgres:13  # You can choose any PostgreSQL version
+    environment:
+      POSTGRES_USER: postgres  # Database username
+      POSTGRES_PASSWORD: 12345678  # Database password
+      POSTGRES_DB: my_database  # Name of the database to create
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist data between container restarts
+      - ./data.csv:/docker-entrypoint-initdb.d/data.csv  # Mount CSV file for import
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # SQL script for creating tables and importing data
+    ports:
+      - "5432:5432"  # Expose PostgreSQL to the host, or remove if not needed externally
+
+volumes:
+  postgres_data:  # Define a named volume to persist PostgreSQL data
