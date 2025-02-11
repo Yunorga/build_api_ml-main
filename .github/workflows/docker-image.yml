@@ -17,6 +17,13 @@ jobs:
         packages: write # Only needed if pushing to GitHub Packages
 
     steps:
+    - name: Login to GitHub Packages (or Docker Hub)
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io # Or docker.io for Docker Hub
+          username: ${{ github.repository_owner }} # Or your Docker Hub username
+          password: ${{ secrets.GITHUB_TOKEN }} # Or your Docker Hub password
+
     - name: Build the Docker image
       uses: actions/checkout@v4
       # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
@@ -24,5 +31,6 @@ jobs:
         context: ..\..\hands_on_microservices # The directory containing your docker-compose.yml file
         file: docker-compose.yml # If your docker-compose file has a different name, specify it here
         push: true # Push the images to the registry
+        tags: ghcr.io/${{ github.repository }}/your-image-name:latest # Replace with your image name and tag
         # tags: ghcr.io/${{ github.repository }}/your-image-name:latest # Or your Docker Hub repo and tag
         
