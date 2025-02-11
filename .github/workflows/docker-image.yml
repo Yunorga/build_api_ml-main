@@ -19,10 +19,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Construction de l'image Docker via docker-compose
-        context: ..\..\hands_on_microservices
+        working-directory: ../../hands_on_microservices
         run: docker-compose build
 
       - name: Sauvegarder l'image Docker en fichier tar
+        working-directory: ../../hands_on_microservices
         # Remplacez "mon_image:latest" par le nom et le tag de votre image tel que défini dans votre docker-compose.yml
         run: docker save -o mon_image.tar mon_image:latest
 
