@@ -17,8 +17,8 @@ jobs:
         packages: write # Only needed if pushing to GitHub Packages
 
     steps:
-    - uses: actions/checkout@v4
     - name: Build the Docker image
+      uses: actions/checkout@v4
       # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
       with:
         context: ..\..\hands_on_microservices # The directory containing your docker-compose.yml file
