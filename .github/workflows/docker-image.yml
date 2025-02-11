@@ -12,7 +12,17 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+        contents: read
+        packages: write # Only needed if pushing to GitHub Packages
+
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      with:
+        context: ..\..\hands_on_microservices # The directory containing your docker-compose.yml file
+        file: docker-compose.yml # If your docker-compose file has a different name, specify it here
+        push: true # Push the images to the registry
+        # tags: ghcr.io/${{ github.repository }}/your-image-name:latest # Or your Docker Hub repo and tag
+        
