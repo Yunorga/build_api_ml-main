@@ -27,8 +27,8 @@ jobs:
         # Remplacez "mon_image:latest" par le nom et le tag de votre image tel que défini dans votre docker-compose.yml
         run: docker save -o mon_image.tar mon_image:latest
 
-      - name: Upload de l'artefact (l'image Docker sauvegardée)
-        uses: actions/upload-artifact@v3
-        with:
-          name: mon_image
-          path: mon_image.tar
+      # - name: Upload de l'artefact (l'image Docker sauvegardée)
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: mon_image
+      #     path: mon_image.tar
