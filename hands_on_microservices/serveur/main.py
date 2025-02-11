@@ -12,4 +12,4 @@ print("\nI'm the server\n")
 @app.get("/data")
 async def get_data():
     print("\nget_data\n")
-    return {"message": "Hello from Service B!"}
+    return {"message": "Hello from the server (previously Service B!) "}
