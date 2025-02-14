@@ -24,19 +24,22 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Set environment variable for image repo
+        run: echo "DOCKER_IMAGE_REPO=ghcr.io/${{ github.repository }}" >> $GITHUB_ENV
+
       - name: Build Docker Images using Docker Compose
         run: |
           cd hands_on_microservices
           docker compose build
 
-      - name: Tag and Push Docker Images
+      - name: Push Docker Images
         run: |
           cd hands_on_microservices
           
-          # Définition du repo GitHub Container Registry
-          REPO="ghcr.io/${{ github.repository }}"
+          # Récupérer le repo défini dans les variables d'environnement
+          REPO="$DOCKER_IMAGE_REPO"
 
-          # Services à traiter
+          # Liste des services à pousser
           SERVICES=("serveur" "client")
 
           for SERVICE in "${SERVICES[@]}"; do

@@ -3,11 +3,11 @@ version: '3.8'
 services:
 
   serveur:
-    image: ghcr.io/${{ github.repository }}/serveur:latest
+    image: ${DOCKER_IMAGE_REPO}/serveur:latest
     build:
       context: ./serveur
     volumes:
-      - /tmp:/tmp  # Share /tmp for the Unix Domain Socket
+      - /tmp:/tmp
     restart: always
     environment:
       - DB_HOST=postgres
@@ -17,7 +17,7 @@ services:
       - DB_NAME=my_database
 
   client:
-    image: ghcr.io/${{ github.repository }}/client:latest
+    image: ${DOCKER_IMAGE_REPO}/client:latest
     build:
       context: ./client
     volumes:
