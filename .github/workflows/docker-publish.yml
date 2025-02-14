@@ -30,10 +30,21 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
 
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
+      - name: Build and Push Docker Images with docker-compose
+        run: |
+          docker-compose build --parallel  # Construit les images en parallèle
+          docker-compose push --parallel  # Pousse les images en parallèle
         with:
           context: hands_on_microservices/serveur
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+          
+      # - name: Build and Push Docker Image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: hands_on_microservices/serveur
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
