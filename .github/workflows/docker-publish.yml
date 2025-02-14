@@ -35,4 +35,5 @@ jobs:
         with:
           context: hands_on_microservices/serveur
           push: true
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
