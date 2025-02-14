@@ -24,18 +24,30 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Set docker_image_full variable
-        run: |
-          echo "docker_image_full=my-image-name:latest" >> $GITHUB_ENV # Exemple: nom de l'image et tag
-
-      - name: Build and Push Docker Images using Docker Compose
+      - name: Build Docker Images using Docker Compose
         run: |
           cd hands_on_microservices
           docker compose build
-          docker compose push
+
+      - name: Tag and Push Docker Images
+        run: |
+          cd hands_on_microservices
+          
+          # Définition du repo GitHub Container Registry
+          REPO="ghcr.io/${{ github.repository }}"
+
+          # Services à traiter
+          SERVICES=("serveur" "client")
+
+          for SERVICE in "${SERVICES[@]}"; do
+            IMAGE_NAME="${REPO}/${SERVICE}:latest"
+
+            echo "Pushing $IMAGE_NAME"
+            docker push $IMAGE_NAME
+          done
 
 
-# name: Build & Publish Docker Image
+# name: Build & Publish Docker Images
 
 # on:
 #   push:
@@ -47,7 +59,7 @@ jobs:
 
 # jobs:
 #   build-and-push:
-#     name: Build and Push Docker Image
+#     name: Build and Push Docker Images
 #     runs-on: ubuntu-latest
 
 #     permissions:
@@ -61,16 +73,53 @@ jobs:
 #       - name: Log in to GitHub Container Registry
 #         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-#       - name: Extract Metadata for Docker
-#         id: meta
-#         uses: docker/metadata-action@v5
-#         with:
-#           images: ghcr.io/${{ github.repository }}
+#       - name: Set docker_image_full variable
+#         run: |
+#           echo "docker_image_full=my-image-name:latest" >> $GITHUB_ENV # Exemple: nom de l'image et tag
 
-#       - name: Build and Push Docker Image
-#         uses: docker/build-push-action@v5
-#         with:
-#           context: hands_on_microservices/serveur
-#           push: true
-#           tags: ${{ steps.meta.outputs.tags }}
-#           labels: ${{ steps.meta.outputs.labels }}
+#       - name: Build and Push Docker Images using Docker Compose
+#         run: |
+#           cd hands_on_microservices
+#           docker compose build
+#           docker compose push
+
+
+# # name: Build & Publish Docker Image
+
+# # on:
+# #   push:
+# #     branches:
+# #       - main
+# #   pull_request:
+# #     branches:
+# #       - main
+
+# # jobs:
+# #   build-and-push:
+# #     name: Build and Push Docker Image
+# #     runs-on: ubuntu-latest
+
+# #     permissions:
+# #       contents: read
+# #       packages: write
+
+# #     steps:
+# #       - name: Checkout Repository
+# #         uses: actions/checkout@v4
+
+# #       - name: Log in to GitHub Container Registry
+# #         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+# #       - name: Extract Metadata for Docker
+# #         id: meta
+# #         uses: docker/metadata-action@v5
+# #         with:
+# #           images: ghcr.io/${{ github.repository }}
+
+# #       - name: Build and Push Docker Image
+# #         uses: docker/build-push-action@v5
+# #         with:
+# #           context: hands_on_microservices/serveur
+# #           push: true
+# #           tags: ${{ steps.meta.outputs.tags }}
+# #           labels: ${{ steps.meta.outputs.labels }}
