@@ -35,5 +35,4 @@ jobs:
         with:
           context: hands_on_microservices/serveur
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
           labels: ${{ steps.meta.outputs.labels }}
