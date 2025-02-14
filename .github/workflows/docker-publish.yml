@@ -24,8 +24,11 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Set environment variable for image repo
-        run: echo "DOCKER_IMAGE_REPO=ghcr.io/${{ github.repository }}" >> $GITHUB_ENV
+      - name: Set environment variable for lowercase image repo
+        run: |
+          REPO_NAME_LOWERCASE=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "DOCKER_IMAGE_REPO=ghcr.io/$REPO_NAME_LOWERCASE" >> $GITHUB_ENV
+        shell: bash
 
       - name: Build Docker Images using Docker Compose
         run: |
@@ -36,7 +39,7 @@ jobs:
         run: |
           cd hands_on_microservices
           
-          # Récupérer le repo défini dans les variables d'environnement
+          # Récupérer le repo en minuscules défini dans les variables d'environnement
           REPO="$DOCKER_IMAGE_REPO"
 
           # Liste des services à pousser
