@@ -24,6 +24,10 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Set docker_image_full variable
+        run: |
+          echo "docker_image_full=my-image-name:latest" >> $GITHUB_ENV # Exemple: nom de l'image et tag
+
       - name: Build and Push Docker Images using Docker Compose
         run: |
           cd hands_on_microservices
