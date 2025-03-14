@@ -3,11 +3,13 @@ version: '3.8'
 services:
 
   serveur:
-    image: ${DOCKER_IMAGE_REPO}/serveur:latest
+    image: myrepo/serveur:latest
     build:
       context: ./serveur
     volumes:
       - /tmp:/tmp
+    ports:
+      - "8000:8000"
     restart: always
     environment:
       - DB_HOST=postgres
@@ -17,13 +19,13 @@ services:
       - DB_NAME=my_database
 
   client:
-    image: ${DOCKER_IMAGE_REPO}/client:latest
+    image: myrepo/client:latest
     build:
       context: ./client
     volumes:
       - /tmp:/tmp
     ports:
-      - "8000:8000"
+      - "8501:8501"
     depends_on:
       - serveur
       - postgres
