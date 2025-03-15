@@ -43,7 +43,7 @@ jobs:
           REPO="$DOCKER_IMAGE_REPO"
 
           # Liste des services à pousser
-          SERVICES=("serveur" "client")
+          SERVICES=("mlops_backend" "mlops_frontend")
 
           for SERVICE in "${SERVICES[@]}"; do
             IMAGE_NAME="${REPO}/${SERVICE}:latest"
