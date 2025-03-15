@@ -35,8 +35,8 @@ jobs:
           REPO="$DOCKER_IMAGE_REPO"
           
           # Construire et taguer les images avec ghcr.io
-          docker build -t "$REPO/mlops_backend:latest" ./backend
-          docker build -t "$REPO/mlops_frontend:latest" ./frontend
+          docker build -t "$REPO/mlops_backend:latest" ./hands_on_microservices/backend
+          docker build -t "$REPO/mlops_frontend:latest" ./hands_on_microservices/frontend
 
       - name: Push Docker Images
         run: |
