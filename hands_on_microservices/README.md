@@ -4,7 +4,7 @@ Le projet propose une interface basée sur deux API, une API pour les utilisateu
 
 **Utilisateurs non authentifiés** :
 
-Ces utilisateurs peuvent uniquement envoyer une image dessinée pour obtenir une prédiction de la forme qui y est représentée. Le backend traite l’image à l’aide d’un modèle de ML (actuellement simulé) et enregistre à la fois l’image et la prédiction dans la base de données. Ils peuvent également consulter la liste des images enregistrées avec leur tag associé, mais sans possibilité de modification.
+Ces utilisateurs peuvent uniquement envoyer une image dessinée pour obtenir une prédiction de la forme qui y est représentée. Le backend traite l’image à l’aide du modèle [vit-geometric-shapes-tiny](https://huggingface.co/0-ma/vit-geometric-shapes-tiny )  et enregistre à la fois l’image et la prédiction dans la base de données. Ils peuvent également consulter la liste des images enregistrées avec leur tag associé, mais sans possibilité de modification.
 
 **Utilisateurs authentifiés** :
 
