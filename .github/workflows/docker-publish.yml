@@ -30,23 +30,22 @@ jobs:
           echo "DOCKER_IMAGE_REPO=ghcr.io/$REPO_NAME_LOWERCASE" >> $GITHUB_ENV
         shell: bash
 
-      - name: Build Docker Images using Docker Compose
+      - name: Build and tag Docker Images
         run: |
-          cd hands_on_microservices
-          docker compose build
+          REPO="$DOCKER_IMAGE_REPO"
+          
+          # Construire et taguer les images avec ghcr.io
+          docker build -t "$REPO/mlops_backend:latest" ./backend
+          docker build -t "$REPO/mlops_frontend:latest" ./frontend
+
       - name: Push Docker Images
         run: |
-          cd hands_on_microservices
-          
-          # Récupérer le repo en minuscules défini dans les variables d'environnement
           REPO="$DOCKER_IMAGE_REPO"
-          # Liste des services à pousser
-          SERVICES=("mlops_backend" "mlops_frontend")
-          for SERVICE in "${SERVICES[@]}"; do
-            IMAGE_NAME="${REPO}/${SERVICE}:latest"
-            echo "Pushing $IMAGE_NAME"
-            docker push $IMAGE_NAME
-          done
+
+          # Pousser les images vers GitHub Container Registry
+          docker push "$REPO/mlops_backend:latest"
+          docker push "$REPO/mlops_frontend:latest"
+
 
 # name: Build & Publish Docker Images
 
