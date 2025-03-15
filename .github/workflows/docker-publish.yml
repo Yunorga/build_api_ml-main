@@ -34,23 +34,73 @@ jobs:
         run: |
           cd hands_on_microservices
           docker compose build
-
       - name: Push Docker Images
         run: |
           cd hands_on_microservices
           
           # Récupérer le repo en minuscules défini dans les variables d'environnement
           REPO="$DOCKER_IMAGE_REPO"
-
           # Liste des services à pousser
-          SERVICES=("serveur" "client")
-
+          SERVICES=("mlops_backend" "mlops_frontend")
           for SERVICE in "${SERVICES[@]}"; do
             IMAGE_NAME="${REPO}/${SERVICE}:latest"
-
             echo "Pushing $IMAGE_NAME"
             docker push $IMAGE_NAME
           done
+
+# name: Build & Publish Docker Images
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   build-and-push:
+#     name: Build and Push Docker Images
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       contents: read
+#       packages: write
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+
+#       - name: Log in to GitHub Container Registry
+#         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+#       - name: Set environment variable for lowercase image repo
+#         run: |
+#           REPO_NAME_LOWERCASE=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+#           echo "DOCKER_IMAGE_REPO=ghcr.io/$REPO_NAME_LOWERCASE" >> $GITHUB_ENV
+#         shell: bash
+
+#       - name: Build Docker Images using Docker Compose
+#         run: |
+#           cd hands_on_microservices
+#           docker compose build
+
+#       - name: Push Docker Images
+#         run: |
+#           cd hands_on_microservices
+          
+#           # Récupérer le repo en minuscules défini dans les variables d'environnement
+#           REPO="$DOCKER_IMAGE_REPO"
+
+#           # Liste des services à pousser
+#           SERVICES=("serveur" "client")
+
+#           for SERVICE in "${SERVICES[@]}"; do
+#             IMAGE_NAME="${REPO}/${SERVICE}:latest"
+
+#             echo "Pushing $IMAGE_NAME"
+#             docker push $IMAGE_NAME
+#           done
 
 
 # name: Build & Publish Docker Images

@@ -1,94 +1,47 @@
-version: '3.8'
+version: "3.9"
 
 services:
-
-  serveur:
-    image: myrepo/serveur:latest
-    build:
-      context: ./serveur
+  db:
+    image: postgres:15
+    container_name: mlops_db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
     volumes:
-      - /tmp:/tmp
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mlops_backend
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
+      - JWT_SECRET=mysecretkey
+    depends_on:
+      - db
     ports:
       - "8000:8000"
     restart: always
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=12345678
-      - DB_NAME=my_database
 
-  client:
-    image: myrepo/client:latest
+  frontend:
     build:
-      context: ./client
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mlops_frontend
     volumes:
-      - /tmp:/tmp
+      - ./frontend:/app
+    depends_on:
+      - backend
     ports:
       - "8501:8501"
-    depends_on:
-      - serveur
-      - postgres
     restart: always
 
-  postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 12345678
-      POSTGRES_DB: my_database
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./data.csv:/docker-entrypoint-initdb.d/data.csv
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-
 volumes:
-  postgres_data:
-
-
-# version: '3.8'
-
-# services:
-
-#   serveur:
-#     build:
-#       context: ./serveur
-#     volumes:
-#       - /tmp:/tmp  # Share /tmp for the Unix Domain Socket
-#     restart: always
-#     environment:
-#       - DB_HOST=postgres  # Point to the PostgreSQL service
-#       - DB_PORT=5432
-#       - DB_USER=postgres
-#       - DB_PASSWORD=12345678
-#       - DB_NAME=my_database  # Name of the PostgreSQL database
-
-#   client:
-#     build:
-#       context: ./client
-#     volumes:
-#       - /tmp:/tmp  # Share /tmp for the Unix Domain Socket
-#     ports:
-#       - "8000:8000"  # Expose service_a's port to access it from outside
-#     depends_on:
-#       - serveur #
-#       - postgres  # Make sure service_a also waits for PostgreSQL
-#     restart: always
-
-#   postgres:
-#     image: postgres:13  # You can choose any PostgreSQL version
-#     environment:
-#       POSTGRES_USER: postgres  # Database username
-#       POSTGRES_PASSWORD: 12345678  # Database password
-#       POSTGRES_DB: my_database  # Name of the database to create
-#     volumes:
-#       - postgres_data:/var/lib/postgresql/data  # Persist data between container restarts
-#       - ./data.csv:/docker-entrypoint-initdb.d/data.csv  # Mount CSV file for import
-#       - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # SQL script for creating tables and importing data
-#     ports:
-#       - "5432:5432"  # Expose PostgreSQL to the host, or remove if not needed externally
-
-# volumes:
-#   postgres_data:  # Define a named volume to persist PostgreSQL data
+  db_data:
