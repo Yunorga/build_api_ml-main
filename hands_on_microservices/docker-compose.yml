@@ -15,12 +15,8 @@ services:
     restart: always
 
   backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/yunorga/build_api_ml-main/mlops_backend:latest  # Utilisation de l'image GHCR
     container_name: mlops_backend
-    volumes:
-      - ./backend:/app
     environment:
       - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
       - JWT_SECRET=mysecretkey
@@ -31,12 +27,8 @@ services:
     restart: always
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/yunorga/build_api_ml-main/mlops_frontend:latest  # Utilisation de l'image GHCR
     container_name: mlops_frontend
-    volumes:
-      - ./frontend:/app
     depends_on:
       - backend
     ports:
